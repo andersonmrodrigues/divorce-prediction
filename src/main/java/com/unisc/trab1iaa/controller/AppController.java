@@ -3,37 +3,73 @@ package com.unisc.trab1iaa.controller;
 import com.unisc.trab1iaa.dto.ConfigDTO;
 import com.unisc.trab1iaa.serivce.AppService;
 import com.unisc.trab1iaa.serivce.RNA;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.PostConstruct;
+import java.util.Date;
+import java.util.List;
 
 @RestController
+@Slf4j
 public class AppController {
 
-    @GetMapping("/")
-    public String index() {
+    private AppService appService;
 
+    @EventListener(ApplicationReadyEvent.class)
+    public void onStart() throws Exception {
+        RNA.setDefaultValues();
+        appService = new AppService();
+        appService.training();
+    }
+
+    @GetMapping("/rna/training")
+    public ResponseEntity<HttpStatus> training() {
         try {
-            AppService appService = new AppService();
-            RNA.setDefaultValues();
-            String response = appService.run();
-            return response;
+            appService.training();
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return "works";
     }
 
-    @PostMapping("/set-values")
-    public void setValues(@RequestBody ConfigDTO configDTO) {
-        RNA.setErrorRate(configDTO.getErrorRate());
-        RNA.setMaxInterationNumber(configDTO.getMaxInterationNumber());
-        RNA.setLearningRate(configDTO.getLearningRate());
+    @GetMapping("/rna/get-result")
+    public ResponseEntity<double[]> getAnswer(@RequestParam(name = "answer") String answer) {
+        try {
+            return new ResponseEntity<>(appService.getResult(answer), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @GetMapping("/questions")
-    public void getAllQuestions(){
+    @PostMapping("/rna/set-values")
+    public ResponseEntity<HttpStatus> setValues(@RequestBody ConfigDTO configDTO) {
+        try {
+            RNA.setErrorRate(configDTO.getErrorRate());
+            RNA.setMaxInterationNumber(configDTO.getMaxInterationNumber());
+            RNA.setLearningRate(configDTO.getLearningRate());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
+    @GetMapping("/rna/questions")
+    public ResponseEntity<List<String>> getAllQuestions() {
+        try {
+            List<String> questions = appService.getQuestions();
+            return new ResponseEntity<>(questions, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
