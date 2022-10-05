@@ -3,40 +3,44 @@ package com.unisc.trab1iaa.serivce;
 import ADReNA_API.Data.DataSet;
 import ADReNA_API.Data.DataSetObject;
 import ADReNA_API.NeuralNetwork.Backpropagation;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.unisc.trab1iaa.serivce.RNA.INPUT_SIZE;
+import static com.unisc.trab1iaa.serivce.RNA.OUTPIT_SIZE;
+
+@Slf4j
 public class AppService {
 
     public static final String CSV_PATH = "D:\\Unisc\\IA Avançada\\divorce-prediction\\dataset\\divorce_data.csv";
-    public static Integer INPUT_SIZE = 162;
-    public static Integer OUTPIT_SIZE = 1;
+
     private Backpropagation backpropagation;
     private DataSet dataSet;
 
     private String testeValue = "";
 
     public AppService() {
-        this.backpropagation = new Backpropagation(INPUT_SIZE, OUTPIT_SIZE);
-        backpropagation.SetLearningRate(0.5);
-        backpropagation.SetErrorRate(0.005);
-        backpropagation.SetMaxIterationNumber(500000);
         // O input é 62, por que cada resposta vai ter 3 bits, como são 54 perguntas então a string terá 162 caracteres
         this.dataSet = new DataSet(INPUT_SIZE, OUTPIT_SIZE);
     }
 
     public String run() throws Exception {
-
+        log.info("Iniciou training set " + new Date());
         createTrainingSetFromCsv();
-        backpropagation.Learn(dataSet);
+        log.info("Finalizou training set" + new Date());
+        log.info("Iniciou treinamento " + new Date());
+        RNA.backpropagation.Learn(dataSet);
+        log.info("Finalizou treinamento " + new Date());
         double[] testRegnize = getDoubleArrayFromString(testeValue);
-        double[] resposta = backpropagation.Recognize(testRegnize);
+        double[] resposta = RNA.backpropagation.Recognize(testRegnize);
         return Arrays.toString(resposta);
     }
 
