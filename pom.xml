@@ -48,7 +48,7 @@
             <groupId>ADReNA_API</groupId>
             <artifactId>ADReNA_API</artifactId>
             <version>1.0</version>
-            <scope>system</scope>
+            <scope>compile</scope>
             <systemPath>${project.basedir}/libs/ADReNA_API.jar</systemPath>
         </dependency>
 
