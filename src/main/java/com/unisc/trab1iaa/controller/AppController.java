@@ -4,19 +4,17 @@ import com.unisc.trab1iaa.dto.ConfigDTO;
 import com.unisc.trab1iaa.serivce.AppService;
 import com.unisc.trab1iaa.serivce.RNA;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
-import java.util.Date;
 import java.util.List;
 
 @RestController
 @Slf4j
+@CrossOrigin
 public class AppController {
 
     private AppService appService;

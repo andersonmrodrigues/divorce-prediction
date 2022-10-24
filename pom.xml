@@ -48,10 +48,10 @@
             <groupId>ADReNA_API</groupId>
             <artifactId>ADReNA_API</artifactId>
             <version>1.0</version>
-            <scope>compile</scope>
-            <systemPath>${project.basedir}/libs/ADReNA_API.jar</systemPath>
-        </dependency>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/ADReNA_API.jar</systemPath>
 
+        </dependency>
     </dependencies>
 
     <build>
