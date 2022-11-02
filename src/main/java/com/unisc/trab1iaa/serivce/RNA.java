@@ -2,6 +2,7 @@ package com.unisc.trab1iaa.serivce;
 
 import ADReNA_API.NeuralNetwork.Backpropagation;
 
+
 public class RNA {
 
     public static Integer INPUT_SIZE = 162;
@@ -26,4 +27,9 @@ public class RNA {
         backpropagation.SetMaxIterationNumber(value);
     }
 
+    @Override
+    public String toString() {
+        System.out.println(backpropagation);
+        return super.toString();
+    }
 }
